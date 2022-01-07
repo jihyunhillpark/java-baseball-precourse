@@ -8,10 +8,10 @@ public class Application {
     public static void main(String[] args) {
         // TODO 숫자 야구 게임 구현
         boolean flag = true;
+        int[] ans = new int[3];
+        int[] input = new int[3];
         while (flag) {
-            int[] ans = new int[3];
-            int[] input = new int[3];
-            getNumbeFromComputer(ans); // 1. user 가 맞춰야 할 난수를 생성 한 뒤 길이간 3인 int형 array에 보관
+            getNumberFromComputer(ans); // 1. user 가 맞춰야 할 난수를 생성 한 뒤 길이간 3인 int형 array에 보관
             while(true){
                 getInputFromUser(input); // 2. user에게 인풋 받아오기
                 if(compareAnswerAndFinish(ans, input) == 1) { // 3. user의 input 정합성 맞추기
@@ -24,7 +24,7 @@ public class Application {
         System.out.println("게임 끝");
     }
 
-    static void getNumbeFromComputer(int[] input) {
+    static void getNumberFromComputer(int[] input) {
         boolean[] visit = new boolean[9];
         int i = 0;
         while( i < input.length){
@@ -39,18 +39,20 @@ public class Application {
 
     static void getInputFromUser(int[] input) {
         boolean flag = true;
+        boolean[] visit = new boolean[9];
         while(flag) {
             flag = false;
             System.out.print("숫자를 입력해 주세요 : ");
             char[] in = Console.readLine().toCharArray();
-            if(in.length != 3) System.out.println("[ERROR]");
+            if(in.length != 3) System.out.println("[ERROR]"); // 인풋 길이가 잘못된 경우
             for (int i = 0; i < input.length; i++) {
                 input[i] = in[i]-'0';
-                if(input[i] < 1 || 9 < input[i]) {
-                    System.out.println("[ERROR]");
+                if(input[i]  < 1 || 9 <input[i] || visit[input[i]-1]) {
+                    System.out.println("[ERROR]"); // 범위의 값을 입력하지 않거나 중복 숫자가 나온 경우
                     flag = true;
                     break;
                 }
+                else visit[input[i] - 1] = true;
             }
         }
     }
