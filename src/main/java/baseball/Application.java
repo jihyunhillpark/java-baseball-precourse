@@ -7,9 +7,9 @@ public class Application {
 
     public static void main(String[] args) {
         // TODO 숫자 야구 게임 구현
-        boolean flag = true;
-        while (flag) {
-            flag = startUserTurn();
+        boolean go = true;
+        while (go) {
+            go = startUserTurn();
         }
         System.out.println("게임 끝");
     }
@@ -24,25 +24,44 @@ public class Application {
         return restartGame();
     }
 
-    static void getNumberFromComputer(int[] input) {
+    private static void getNumberFromComputer(int[] input) {
         boolean[] visit = new boolean[9];
         int i = 0;
-        while( i < input.length){
+        while (i < input.length) {
             int num = Randoms.pickNumberInRange(1, 9);
-            if ( !visit[num-1] ) {
+            if (!visit[num - 1]) {
                 input[i] = num;
-                visit[num-1] = true;
+                visit[num - 1] = true;
                 i++;
             }
         }
     }
 
-    static void getInputFromUser(int[] input) {
-        boolean flag = false;
-        while(!flag) {
+    private static void getInputFromUser(int[] input) {
+        boolean isValid = false;
+        while (!isValid) {
             System.out.print("숫자를 입력해 주세요 : ");
-            flag = isDigitsValid(input);
+            isValid = isDigitsValid(input);
         }
+    }
+
+    private static boolean isDigitsValid(int[] input) {
+        boolean[] visit = new boolean[9];
+        char[] in = Console.readLine().toCharArray();
+        if (in.length != 3) {
+            System.out.println("[ERROR]"); // 인풋 길이가 잘못된 경우
+            return false;
+        }
+        for (int i = 0; i < input.length; i++) {
+            input[i] = in[i] - '0';
+            if (input[i] < 1 || 9 < input[i] || visit[input[i] - 1]) {
+                System.out.println("[ERROR]"); // 범위의 값을 입력하지 않거나 중복 숫자가 나온 경우
+                return false;
+            } else {
+                visit[input[i] - 1] = true;
+            }
+        }
+        return true;
     }
 
     private static boolean compareAnswer(int[] ans, int[] input) {
@@ -58,46 +77,42 @@ public class Application {
 
     private static void markResult(int idx, int input, int ansIdx, int ans, int[] result) {
         if (input == ans) {
-            if (idx == ansIdx ) result[0]++;
-            else result[1]++;
+            if (idx == ansIdx) {
+                result[0]++;
+            } else {
+                result[1]++;
+            }
         }
     }
-    private static void printResult(int[] result){
+
+    private static void printResult(int[] result) {
         if (result[0] == 0 && result[1] == 0) {
             System.out.println("낫싱");
         } else {
-            if (result[0]> 0) System.out.print(result[0] + "스트라이크 ");
-            if (result[1] > 0) System.out.print(result[1] + "볼");
+            if (result[0] > 0) {
+                System.out.print(result[0] + "스트라이크 ");
+            }
+            if (result[1] > 0) {
+                System.out.print(result[1] + "볼");
+            }
             System.out.println();
-            if (result[0] == 3) System.out.println("3개의 숫자를 모두 맞히셨습니다! 게임종료");
+            if (result[0] == 3) {
+                System.out.println("3개의 숫자를 모두 맞히셨습니다! 게임종료");
+            }
         }
     }
-    private static boolean restartGame(){
+
+    private static boolean restartGame() {
         System.out.println("게임을 새로 시작하려면 1, 종료하려면 2를 입력하세요.");
-        while(true) {
+        while (true) {
             int res = Integer.parseInt(Console.readLine());
-            if(res == 1) return true;
-            else if (res == 2) return false;
-            else {
+            if (res == 1) {
+                return true;
+            } else if (res == 2) {
+                return false;
+            } else {
                 System.out.println("[ERROR]");
             }
         }
-    }
-    private static boolean isDigitsValid(int[] input){
-        boolean[] visit = new boolean[9];
-        char[] in = Console.readLine().toCharArray();
-        if(in.length != 3) {
-            System.out.println("[ERROR]"); // 인풋 길이가 잘못된 경우
-            return false;
-        }
-        for (int i = 0; i < input.length; i++) {
-            input[i] = in[i]-'0';
-            if(input[i]  < 1 || 9 <input[i] || visit[input[i]-1]) {
-                System.out.println("[ERROR]"); // 범위의 값을 입력하지 않거나 중복 숫자가 나온 경우
-                return false;
-            }
-            else visit[input[i] - 1] = true;
-        }
-        return true;
     }
 }
